@@ -1,0 +1,60 @@
+---
+title: "knox_hw1"
+author: "Jeremy Knox"
+date: "1/26/2020"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(stargazer)
+library(car)
+library(lmtest)
+df <- read.csv("HPRICE2.csv")
+```
+
+Consider the following linear model:
+$$
+\text { Price }_{\mathrm{i}}=\beta_{0}+\beta_{1} N O x_{i}+\beta_{2} \text { Rooms }_{\mathrm{i}}+\beta_{3} \text { STratio }_{i}+u_{i}
+$$
+Where *Price* is the value of the house, *NOx* is a measure of NOx concentration in the Census track (in parts per 100 million), *Rooms* is the number of rooms in the house, and *STratio* is the student-teacher ratio in the nearest school. The provided data consist of n = 506 observations. The table are summary statistics followed by the a linear model of the eqaution above. 
+
+<div align="center">
+```{r Summary Statistics, echo=F, results = "asis"}
+stargazer(df, type="html")
+```
+</div>
+
+<div align="center">
+```{r Linear Model, echo=F, results = "asis"}
+lm <- lm(data=df, price ~ nox + rooms +stratio)
+stargazer(lm, title="Linear Model", align=T, type="html")
+predict(lm, data.frame(price=c(NA), nox=c(6), rooms=c(7), stratio=c(20)))
+```
+</div>
+Note: The model may be incorrect. The variables used may have spurious relationship.
+
+(a) What is the effect of adding an additional room on the house price, holding NOx concentrations and student-teacher ratio constant?  
+On average, house price will go up by about $ 6,419 when adding an additional room, holding all else equal.  
+
+(b) What is the estimated effect on house values of reducing NOx concentrations by 2.5 parts per 100 million?  
+On avereage, house price will go down by about $ -3,827 when NOx concentrations go up by 2.5 parts per million, holding all else equal.  
+
+(c) What percent of the variation in house values is explained by NOx concentrations, number of rooms, and student-teacher ratio?  
+57.3% of the variation in house values is explained by NOx concentrations, number of rooms, and student-teacher ratio.  
+
+(d) What is the predicted value of a house with NOx concentrations of 6, with 7 rooms, and a student-teacher ratio of 20? The actual price for that house was $20,000. Did the buyer overpay for this house? 
+A house with NOx concentrations of 6, with 7 rooms, and a student-teacher ratio of 20 is estimated to cost around $24,433.29. The buyer got a good deal if comparing to the average. 
+
+(e) Test the null hypothesis that β1 equals zero.  
+Reject the null hypothesis that $\beta_{1} = 0$ at the 1% significance level.
+
+(f) Test the null hypothesis that β1 and β2 jointly equal zero.   
+The joint hypothesis test results in F-stat of 190 and p-value of 2.2e-16, meaning the 5% significance level (and really any commonly used significance level) we can reject the null hypothesis that both coefficient are 0. 
+
+(g) Test the null hypothesis that β1 = β3.  
+Do not reject the null hypothesis that $\beta_{1} = \beta_{3}$ at the 10% significance level, p-value of 0.3161. 
+
